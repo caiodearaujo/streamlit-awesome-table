@@ -4,8 +4,14 @@
 
 Awesome table is a component to use with (Streamlit)[https://github.com/streamlit/streamlit] with order and search components.
 
+## Installing AwesomeTable using PiP
+```
+pip install streamlit-awesome-table==0.0.1
+```
 
-## **Create a simple table**
+## Examples
+### **Create a simple table**
+[View complete source here](/samples/simple_table/__init__.py)
 
 ```
 import pandas as pd
@@ -17,7 +23,8 @@ AwesomeTable(pd.json_normalize(sample_data))
 ```
 ![Simple Table w/ AwesomeTable](/samples/simple_table/awesome-table-simple.png)
 
-## **Create a table with columns**
+### **Create a table with columns**
+[View complete source here](/samples/with_columns/__init__.py)
 
 ```
 import pandas as pd
@@ -37,7 +44,8 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 ![Simple Table w/ AwesomeTable](/samples/with_columns/awesome-table-with-columns.png)
 
-## **Create a table with icon button**
+### **Create a table with icon button**
+[View complete source here](/samples/with_iconbutton/__init__.py)
 
 ```
 import pandas as pd
@@ -57,7 +65,8 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 ![Simple Table w/ AwesomeTable](/samples/with_iconbutton/awesome-table-with-iconbutton.png)
 
-## **Create a table with order**
+### **Create a table with order**
+[View complete source here](/samples/with_order/__init__.py)
 
 ```
 import pandas as pd
@@ -77,7 +86,8 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 ![Simple Table w/ AwesomeTable](/samples/with_order/awesome-table-with-order.png)
 
-## **Create a table with search**
+### **Create a table with search**
+[View complete source here](/samples/with_search/__init__.py)
 
 ```
 import pandas as pd
@@ -97,7 +107,8 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 ![Simple Table w/ AwesomeTable](/samples/with_search/awesome-table-with-search.png)
 
-## **Create a table with sidebar**
+### **Create a table with sidebar**
+[View complete source here](/samples/with_sidebar/__init__.py)
 
 ```
 import pandas as pd
@@ -117,7 +128,8 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 ![Simple Table w/ AwesomeTable](/samples/with_sidebar/awesome-table-with-sidebar.png)
 
-## **Create a table with image**
+### **Create a table with image**
+[View complete source here](/samples/with_image/__init__.py)
 
 ```
 import pandas as pd

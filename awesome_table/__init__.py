@@ -60,7 +60,7 @@ class AwesomeTable():
         if columns is not None and len(columns) > 0:
             if type(columns[0]) is str:
                 return data[[column for column in columns]]
-            return data[[column.name for column in columns]]
+            return data[[column.name for column in columns if column.name is not None]]
         return data
     
     def set_columns(self, columns):
@@ -111,7 +111,7 @@ class AwesomeTable():
         Returns:
             List[str]: Columns name
         """
-        return [column.name for column in self.get_columns()]
+        return [column.name for column in self.get_columns() if column.name is not None]
        
     
     def build_table_content(self):
@@ -152,27 +152,26 @@ class AwesomeTable():
             query = search_by+f'.astype("str").str.lower().str.contains("{str(search_text).lower()}")'
             self.data.query(query, engine='python', inplace=True)
         self.build_table_content()
+        
+    def get_columns_with_dtype_string(self):
+        return [column.name for column in self.get_columns() if column.dtype == ColumnDType.STRING]
 
     def build_order_component(self):
         """Build order and search components.
         """
         if self.show_search_order_in_sidebar:
             if self.show_order:
-                st.sidebar.selectbox('Order by', self.data.columns, format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
+                st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
                 st.sidebar.selectbox('Strategy', ['Ascending','Descending'], on_change=self.order_table(), key='sb_order_ascending')
             if self.show_search:
                 st.sidebar.text_input('Search', on_change=self.search_table(), key='sb_search_text')
-                st.sidebar.selectbox('by', self.data.columns    , format_func=self.get_column_label_by_name, on_change=self.search_table(), key='sb_search_by')    
+                st.sidebar.selectbox('by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.search_table(), key='sb_search_by')    
         else:
             col_order, col_strategy, col_search, col_searchby = st.columns([1,1,2,1])
             if self.show_order:
-                col_order.selectbox('Order by', self.data.columns, format_func=self.get_column_label_by_name, on_change=self.order_table(), key='order_column')
+                col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='order_column')
                 col_strategy.selectbox('Strategy', ['Ascending','Descending'], on_change=self.order_table(), key='order_ascending')
             if self.show_search:
                 col_search.text_input('Search', on_change=self.search_table(), key='search_text')
-                col_searchby.selectbox('by', self.data.columns    , format_func=self.get_column_label_by_name, on_change=self.search_table(), key='search_by')
+                col_searchby.selectbox('by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.search_table(), key='search_by')
                 
-st.title('Pandas Dataframe')
-AwesomeTable(
-    data=pd.json_normalize([{"id":"a8c10687-30bc-46ba-80e9-3f6e747d5090","name":"MRF - 1 2021","creation_date":"2022/02/04 15:35:04","start_date":"2021-06-01 00:00:00","until-date":"2021-07-01 00:00:00","comment":"Scenario created from file uploaded in storage - new_scenario_test.xlsx","status":"ERROR - 0","run_date":"2022/02/04 15:36:47","job_id":"4b67064b-88df-494b-adce-cde872b6e735","files":{"input_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/inputs/499040-new_scenario_test.xlsx","solution_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/solution/a8c10687-30bc-46ba-80e9-3f6e747d5090/solution.xlsx","final_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/final/a8c10687-30bc-46ba-80e9-3f6e747d5090/final_solution.xlsx"},"_rid":"ZmUEAOX-PP0OAAAAAAAAAA==","_self":"dbs/ZmUEAA==/colls/ZmUEAOX-PP0=/docs/ZmUEAOX-PP0OAAAAAAAAAA==/","_etag":"\"b103e23a-0000-0200-0000-61fd73270000\"","_attachments":"attachments/","notebook_url":"https://adb-8909892809143077.17.azuredatabricks.net/?o=8909892809143077#job/113888/run/264311","_ts":1644000039},{"id":"d0e0a407-7cf9-498a-a97d-e9c297cca37a","name":"MRF - 1 2021","creation_date":"2022/02/04 15:57:59","start_date":"2021-06-01 00:00:00","until-date":"2021-07-01 00:00:00","comment":"Scenario created from file uploaded in storage - new_scenario_test.xlsx","status":"ERROR - 0","run_date":"2022/02/04 15:59:39","job_id":"d7305b04-eabc-4f31-bfe5-8c4f37f7041a","files":{"input_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/inputs/921672-new_scenario_test.xlsx","solution_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/solution/d0e0a407-7cf9-498a-a97d-e9c297cca37a/solution.xlsx","final_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/final/d0e0a407-7cf9-498a-a97d-e9c297cca37a/final_solution.xlsx"},"_rid":"ZmUEAOX-PP0PAAAAAAAAAA==","_self":"dbs/ZmUEAA==/colls/ZmUEAOX-PP0=/docs/ZmUEAOX-PP0PAAAAAAAAAA==/","_etag":"\"b103a5d8-0000-0200-0000-61fd78650000\"","_attachments":"attachments/","notebook_url":"https://adb-8909892809143077.17.azuredatabricks.net/?o=8909892809143077#job/114251/run/264544","_ts":1644001381}]),
-)

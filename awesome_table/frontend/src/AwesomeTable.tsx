@@ -6,8 +6,7 @@ import {
 import React, { ReactNode } from "react"
 
 interface State {
-  numClicks: number
-  isFocused: boolean
+  selected_row: any
 }
 
 /**
@@ -15,7 +14,7 @@ interface State {
  * automatically when your component should be re-rendered.
  */
 class AwesomeTable extends StreamlitComponentBase<State> {
-  public state = { numClicks: 0, isFocused: false }
+  public state = { selected_row: {} }
 
   public render = (): ReactNode => {
     // Arguments that are passed to the plugin in Python are accessible
@@ -30,80 +29,150 @@ class AwesomeTable extends StreamlitComponentBase<State> {
     const { theme } = this.props
     const style: React.CSSProperties = {}
 
-    // Maintain compatibility with older versions of Streamlit that don't send
-    // a theme object.
-    if (theme) {
-      // Use the theme object to style our button border. Alternatively, the
-      // theme style is defined in CSS vars.
-      const borderStyling = `1px solid ${
-        this.state.isFocused ? theme.primaryColor : "gray"
-      }`
-      style.border = borderStyling
-      style.outline = borderStyling
-    }
-
-    // Show a button and some text.
-    // When the button is clicked, we'll increment our "numClicks" state
-    // variable, and send its new value back to Streamlit, where it'll
-    // be available to the Python program.
     return (
       <div className="table-responsive">
         <table className="table table-striped table-hover">
           <thead>
-            {
-              columns.map((column: any) => {
-                return(
-                <th scope="col">{column.label}</th>
-              )
+            {columns.map((column: any) => {
+              console.log(column)
+              if(column.show){
+                return <th scope="col">{column.label}</th>
+              }
             })}
           </thead>
           <tbody>
             {data.data.map((data: any) => {
               const ICONBUTTON = {
-                  "display": "inline-block",
-                  "font-size": "1.25rem",
-                  "color": "#212529",
-                  "cursor": "pointer",
-                  "user-select": "none",
-                  "padding": "0.5rem 1rem"
+                display: "inline-block",
+                "font-size": "1.25rem",
+                color: "#212529",
+                cursor: "pointer",
+                "user-select": "none",
+                padding: "0.5rem 1rem",
               }
+
+              const ICONBUTTON_DISABLED = {
+                display: "inline-block",
+                "font-size": "1.25rem",
+                color: "#dddddd",
+                cursor: "default",
+                "user-select": "none",
+                padding: "0.5rem 1rem",
+              }
+
               const IMAGE = {
-                "height": 50,
+                height: 50,
               }
               return (
-                <tr>{
-                    columns.map((column: any) => {
-                      if(column.dtype === "STRING") {
-                        return (
-                          <td>{data[column.name]}</td>
-                        )
+                <tr>
+                  {columns.map((column: any) => {
+                    if (column.show) {
+                      if (column.dtype === "STRING") {
+                        if (column.switchcase) {
+                          return <td>{column.switchcase[data[column.name]]}</td>
+                        }else{
+                          return <td>{data[column.name]}</td>
+                        }
                       }
-                      if(column.dtype === "ICONBUTTON") {
+                      if (column.dtype === "ICONBUTTON") {
+                        return !data[column.name] ||
+                          data[column.name] === "" ? (
+                          <td className="align-middle text-center">
+                            <i
+                              style={ICONBUTTON_DISABLED}
+                              className={column.icon}
+                            ></i>
+                          </td>
+                        ) : (
+                          <td className="align-middle text-center">
+                            <a
+                              href={data[column.name]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <i style={ICONBUTTON} className={column.icon}></i>
+                            </a>
+                          </td>
+                        )
+                      } else if (column.dtype === "DOWNLOAD") {
+                        return !data[column.name] ||
+                          data[column.name] === "" ? (
+                          <td className="align-middle text-center">
+                            <i
+                              style={ICONBUTTON_DISABLED}
+                              className="fa-solid fa-cloud-arrow-down"
+                            ></i>
+                          </td>
+                        ) : (
+                          <td className="align-middle text-center">
+                            <a
+                              href={data[column.name]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <i
+                                style={ICONBUTTON}
+                                className="fa-solid fa-cloud-arrow-down"
+                              ></i>
+                            </a>
+                          </td>
+                        )
+                      } else if (column.dtype === "LINK") {
+                        return !data[column.name] ||
+                          data[column.name] === "" ? (
+                          <td className="align-middle text-center">
+                            <i
+                              style={ICONBUTTON_DISABLED}
+                              className="fa-solid fa-up-right-from-square"
+                            ></i>
+                          </td>
+                        ) : (
+                          <td className="align-middle text-center">
+                            <a
+                              href={data[column.name]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <i
+                                style={ICONBUTTON}
+                                className="fa-solid fa-up-right-from-square"
+                              ></i>
+                            </a>
+                          </td>
+                        )
+                      } else if (column.dtype === "IMAGE") {
+                        return !data[column.name] ||
+                          data[column.name] === "" ? (
+                          <td className="align-middle text-center"></td>
+                        ) : (
+                          <td className="align-middle text-center">
+                            <img
+                              style={IMAGE}
+                              src={data[column.name]}
+                              alt={column.name}
+                            />
+                          </td>
+                        )
+                      } else if (column.dtype === "SET_STATE") {
+                        const icon =
+                          !data[column.icon] || data[column.icon] === ""
+                            ? "fa-solid fa-eye"
+                            : data[column.icon]
                         return (
-                          <td>
-                            <a href={data[column.name]} target="_blank" rel="noopener noreferrer"><i style={ICONBUTTON} className={column.icon}></i></a>
+                          <td className="align-middle text-center">
+                            <i
+                              style={ICONBUTTON}
+                              className={icon}
+                              onClick={() => this.onClicked(data)}
+                            ></i>
                           </td>
                         )
                       }
-                      if(column.dtype === "DOWNLOAD") {
-                        return (
-                          <td className="align-middle text-center"><a href={data[column.name]} target="_blank" rel="noopener noreferrer"><i style={ICONBUTTON} className="fa-solid fa-cloud-arrow-down"></i></a></td>
-                        )
-                      }
-                      if(column.dtype === "LINK") {
-                        return (
-                          <td className="align-middle text-center"><a href={data[column.name]} target="_blank" rel="noopener noreferrer"><i style={ICONBUTTON} className="fa-solid fa-up-right-from-square"></i></a></td>
-                        )
-                      }
-                      if(column.dtype === "IMAGE") {
-                        return(
-                          <td className="align-middle text-center"><img style={IMAGE} src={data[column.name]} alt={column.name}/></td>
-                        )
+                      return <td></td>
                     }
-                    return (<td></td>)
                   }, this)}
                 </tr>
-              );
+              )
             })}
           </tbody>
         </table>
@@ -111,24 +180,11 @@ class AwesomeTable extends StreamlitComponentBase<State> {
     )
   }
 
-  /** Click handler for our "Click Me!" button. */
-  private onClicked = (): void => {
-    // Increment state.numClicks, and pass the new value back to
-    // Streamlit via `Streamlit.setComponentValue`.
+  private onClicked = (data: any): void => {
     this.setState(
-      prevState => ({ numClicks: prevState.numClicks + 1 }),
-      () => Streamlit.setComponentValue(this.state.numClicks)
+      (prevState) => ({ selected_row: data }),
+      () => Streamlit.setComponentValue(this.state.selected_row)
     )
-  }
-
-  /** Focus handler for our "Click Me!" button. */
-  private _onFocus = (): void => {
-    this.setState({ isFocused: true })
-  }
-
-  /** Blur handler for our "Click Me!" button. */
-  private _onBlur = (): void => {
-    this.setState({ isFocused: false })
   }
 }
 

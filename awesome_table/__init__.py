@@ -23,7 +23,15 @@ class AwesomeTable():
             url='http://localhost:3001'
         )
     
-    def __init__(self, data: pd.DataFrame, columns: List =[], show_order = False, show_search= False, show_search_order_in_sidebar = False, key = 'awesome_table'):
+    def __init__(self, 
+                 data: pd.DataFrame, 
+                 columns: List =[], 
+                 show_order = False, 
+                 show_search= False, 
+                 show_search_order_in_sidebar = False,
+                 order_by = None,
+                 order_descending = True, 
+                 key = 'awesome_table'):
         """AwesomeTable is a component for Streamlit to build a table based in bootstrap with search and order funcionality.
         Can build this table based in a pandas dataframe. The order and search components would be displayed on the sidebar or above the table.
 
@@ -33,14 +41,19 @@ class AwesomeTable():
             show_order (bool, optional): Show order components. Defaults to False.
             show_search (bool, optional): Show search components. Defaults to False.
             show_search_order_in_sidebar (bool, optional): [description]. Defaults to False.
+            order_by (str, optional): Column name to order the table. Defaults to None (Index from pandas Dataframe).
+            order_descending (bool, optional): Order descending. Defaults to True.
             key (str, optional): Key for identification table. Defaults to 'awesome_table'.
         """
+        self.data = pd.json_normalize([])
         self.data = self.set_data(data, columns)
         self.columns = self.set_columns(columns)
         self.key = key
         self.show_order = show_order
         self.show_search = show_search
         self.show_search_order_in_sidebar = show_search_order_in_sidebar
+        self.order_by = order_by
+        self.order_descending = order_descending
 
         self.build_table_content()
 
@@ -154,23 +167,36 @@ class AwesomeTable():
         self.build_table_content()
         
     def get_columns_with_dtype_string(self):
-        return [column.name for column in self.get_columns() if column.dtype == ColumnDType.STRING]
+        return [column.name for column in self.get_columns() if column.dtype == ColumnDType.STRING and column.show]
 
     def build_order_component(self):
         """Build order and search components.
         """
         if self.show_search_order_in_sidebar:
             if self.show_order:
-                st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
-                st.sidebar.selectbox('Strategy', ['Ascending','Descending'], on_change=self.order_table(), key='sb_order_ascending')
+                if self.order_by is not None and self.order_by in self.get_columns_with_dtype_string():
+                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.order_by, on_change=self.order_table(), key='sb_order_column')
+                else:
+                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
+                if self.order_descending:
+                    st.sidebar.selectbox('Order direction', ['Ascending', 'Descending'], index=1, on_change=self.order_table(), key='sb_order_ascending')
+                else:
+                    st.sidebar.selectbox('Strategy', ['Ascending', 'Descending'], on_change=self.order_table(), key='sb_order_ascending')
             if self.show_search:
                 st.sidebar.text_input('Search', on_change=self.search_table(), key='sb_search_text')
                 st.sidebar.selectbox('by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.search_table(), key='sb_search_by')    
         else:
             col_order, col_strategy, col_search, col_searchby = st.columns([1,1,2,1])
             if self.show_order:
-                col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='order_column')
-                col_strategy.selectbox('Strategy', ['Ascending','Descending'], on_change=self.order_table(), key='order_ascending')
+                if self.order_by is not None and self.order_by in self.get_columns_with_dtype_string():
+                    col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.order_by, on_change=self.order_table(), key='order_column')
+                else:
+                    col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='order_column')
+                if  self.order_descending:  
+                    col_strategy.selectbox('Strategy', ['Ascending','Descending'], index=1, on_change=self.order_table(), key='order_ascending')
+                else:
+                    col_strategy.selectbox('Strategy', ['Ascending','Descending'], index=0, on_change=self.order_table(), key='order_ascending')
+                    
             if self.show_search:
                 col_search.text_input('Search', on_change=self.search_table(), key='search_text')
                 col_searchby.selectbox('by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.search_table(), key='search_by')

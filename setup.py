@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="streamlit-awesome-table",
-    version="0.0.6",
+    version="0.0.7",
     author="Caio Fábio de Araujo",
     author_email="caiofaar@gmail.com",
     description="Awesome Table is a component to display a table in Streamlit with search and order.",

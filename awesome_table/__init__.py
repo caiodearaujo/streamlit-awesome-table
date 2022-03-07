@@ -169,13 +169,19 @@ class AwesomeTable():
     def get_columns_with_dtype_string(self):
         return [column.name for column in self.get_columns() if column.dtype == ColumnDType.STRING and column.show]
 
+    def get_index_from_column_name(self):
+        for idx,val in enumerate(self.get_columns_with_dtype_string()):
+            if val == self.order_by:
+                return idx
+    
     def build_order_component(self):
         """Build order and search components.
         """
         if self.show_search_order_in_sidebar:
             if self.show_order:
                 if self.order_by is not None and self.order_by in self.get_columns_with_dtype_string():
-                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.order_by, on_change=self.order_table(), key='sb_order_column')
+                    
+                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.get_index_from_column_name, on_change=self.order_table(), key='sb_order_column')
                 else:
                     st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
                 if self.order_descending:

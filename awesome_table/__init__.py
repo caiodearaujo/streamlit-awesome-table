@@ -180,8 +180,8 @@ class AwesomeTable():
         if self.show_search_order_in_sidebar:
             if self.show_order:
                 if self.order_by is not None and self.order_by in self.get_columns_with_dtype_string():
-                    
-                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.get_index_from_column_name(), on_change=self.order_table(), key='sb_order_column')
+                    index = self.get_index_from_column_name()
+                    st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=index, on_change=self.order_table(), key='sb_order_column')
                 else:
                     st.sidebar.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='sb_order_column')
                 if self.order_descending:
@@ -195,7 +195,8 @@ class AwesomeTable():
             col_order, col_strategy, col_search, col_searchby = st.columns([1,1,2,1])
             if self.show_order:
                 if self.order_by is not None and self.order_by in self.get_columns_with_dtype_string():
-                    col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=self.get_index_from_column_name(), on_change=self.order_table(), key='order_column')
+                    index = self.get_index_from_column_name()
+                    col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, index=index, on_change=self.order_table(), key='order_column')
                 else:
                     col_order.selectbox('Order by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.order_table(), key='order_column')
                 if  self.order_descending:  

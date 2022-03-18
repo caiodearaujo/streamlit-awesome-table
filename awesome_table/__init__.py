@@ -207,3 +207,8 @@ class AwesomeTable():
             if self.show_search:
                 col_search.text_input('Search', on_change=self.search_table(), key='search_text')
                 col_searchby.selectbox('by', self.get_columns_with_dtype_string(), format_func=self.get_column_label_by_name, on_change=self.search_table(), key='search_by')
+                
+st.header('OOPs')
+
+
+AwesomeTable(pd.json_normalize('[]'))

@@ -73,7 +73,7 @@ class AwesomeTable extends StreamlitComponentBase<State> {
               return (
                 <tr>{
                     columns.map((column: any) => {
-                      if(column.dtype === "STRING") {
+                      if(column.dtype === "STRING" || column.dtype === "DATETIME") {
                         return (
                           <td>{data[column.name]}</td>
                         )

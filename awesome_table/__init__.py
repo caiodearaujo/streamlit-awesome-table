@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from pandas.io.json import json_normalize
 import streamlit as st
 from typing import List
 import streamlit.components.v1 as components
@@ -59,8 +60,11 @@ class AwesomeTable():
         """
         if columns is not None and len(columns) > 0:
             if type(columns[0]) is str:
-                return data[[column for column in columns]]
-            return data[[column.name for column in columns]]
+                data = data[[column for column in columns]]
+            else:
+                data = data[[column.name for column in columns]]
+            for col in [column.name for column in columns if column.dtype == ColumnDType.DATETIME]:
+                data[col] = pd.to_datetime(data[col])
         return data
     
     def set_columns(self, columns):
@@ -117,7 +121,10 @@ class AwesomeTable():
     def build_table_content(self):
         """Create json to populate table from pandas Dataframe.
         """
-        self.table_content = self.data.to_json(path_or_buf=None, index=False, orient='table')
+        data = self.data.copy()
+        for col in [column for column in self.columns if column.dtype == ColumnDType.DATETIME]:
+            data[col.name] = pd.to_datetime(data[col.name]).dt.strftime(col.dateformat)
+        self.table_content = data.to_json(path_or_buf=None, index=False, orient='table')
         
     def order_table(self):
         """Order pandas dataframe based in parameters filled in frontend.
@@ -173,6 +180,137 @@ class AwesomeTable():
                 col_searchby.selectbox('by', self.data.columns    , format_func=self.get_column_label_by_name, on_change=self.search_table(), key='search_by')
                 
 st.title('Pandas Dataframe')
+data = json_normalize([{
+  "id": 1,
+  "full_name": "Mandel Hedaux",
+  "email": "mhedaux0@bbc.co.uk",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Mandel",
+  "created_at": "15/04/2022"
+}, {
+  "id": 2,
+  "full_name": "Carolee Makiver",
+  "email": "cmakiver1@1und1.de",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Carolee",
+  "created_at": "12/10/2020"
+}, {
+  "id": 3,
+  "full_name": "Celle Crichmere",
+  "email": "ccrichmere2@goo.ne.jp",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Celle",
+  "created_at": "14/11/2020"
+}, {
+  "id": 4,
+  "full_name": "Petunia Messitt",
+  "email": "pmessitt3@nifty.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Petunia",
+  "created_at": "27/06/2021"
+}, {
+  "id": 5,
+  "full_name": "Sukey Chesson",
+  "email": "schesson4@mediafire.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Sukey",
+  "created_at": "06/05/2020"
+}, {
+  "id": 6,
+  "full_name": "Bobbi O' Molan",
+  "email": "bo5@drupal.org",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Bobbi",
+  "created_at": "07/12/2021"
+}, {
+  "id": 7,
+  "full_name": "Iorgos Jaskowicz",
+  "email": "ijaskowicz6@google.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Iorgos",
+  "created_at": "03/03/2022"
+}, {
+  "id": 8,
+  "full_name": "Dody Kindell",
+  "email": "dkindell7@mtv.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Dody",
+  "created_at": "07/01/2021"
+}, {
+  "id": 9,
+  "full_name": "Brittney Sherry",
+  "email": "bsherry8@seesaa.net",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Brittney",
+  "created_at": "26/05/2021"
+}, {
+  "id": 10,
+  "full_name": "Rose Penniell",
+  "email": "rpenniell9@howstuffworks.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Rose",
+  "created_at": "17/11/2020"
+}, {
+  "id": 11,
+  "full_name": "Grace Van Velden",
+  "email": "gvana@umn.edu",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Grace",
+  "created_at": "06/01/2022"
+}, {
+  "id": 12,
+  "full_name": "Trula Domonkos",
+  "email": "tdomonkosb@samsung.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Trula",
+  "created_at": "23/07/2021"
+}, {
+  "id": 13,
+  "full_name": "Inger Spinage",
+  "email": "ispinagec@domainmarket.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Inger",
+  "created_at": "03/09/2020"
+}, {
+  "id": 14,
+  "full_name": "Wyatt Robberecht",
+  "email": "wrobberechtd@stumbleupon.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Wyatt",
+  "created_at": "09/06/2021"
+}, {
+  "id": 15,
+  "full_name": "Abdul Domenici",
+  "email": "adomenicie@dell.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Abdul",
+  "created_at": "18/03/2021"
+}, {
+  "id": 16,
+  "full_name": "Ellery Stothart",
+  "email": "estothartf@sourceforge.net",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Ellery",
+  "created_at": "19/04/2021"
+}, {
+  "id": 17,
+  "full_name": "Filmer Biddles",
+  "email": "fbiddlesg@ow.ly",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Filmer",
+  "created_at": "21/10/2020"
+}, {
+  "id": 18,
+  "full_name": "Sansone Dench",
+  "email": "sdenchh@meetup.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Sansone",
+  "created_at": "23/03/2021"
+}, {
+  "id": 19,
+  "full_name": "Beth Dendon",
+  "email": "bdendoni@merriam-webster.com",
+  "avatar": "https://avatar.oxro.io/avatar.svg?name=Beth",
+  "created_at": "01/06/2020"
+}, {
+  "id": 20,
+  "full_name": "Mannie Stewart",
+  "email": "mstewartj@theatlantic.com",
+  "avatar": "https://avatar.oxro.io/avatar.png?name=Mannie",
+  "created_at": "02/08/2021"
+}])
+
+data['created_at'] = pd.to_datetime(data['created_at'], format='%d/%m/%Y')
+
 AwesomeTable(
-    data=pd.json_normalize([{"id":"a8c10687-30bc-46ba-80e9-3f6e747d5090","name":"MRF - 1 2021","creation_date":"2022/02/04 15:35:04","start_date":"2021-06-01 00:00:00","until-date":"2021-07-01 00:00:00","comment":"Scenario created from file uploaded in storage - new_scenario_test.xlsx","status":"ERROR - 0","run_date":"2022/02/04 15:36:47","job_id":"4b67064b-88df-494b-adce-cde872b6e735","files":{"input_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/inputs/499040-new_scenario_test.xlsx","solution_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/solution/a8c10687-30bc-46ba-80e9-3f6e747d5090/solution.xlsx","final_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/final/a8c10687-30bc-46ba-80e9-3f6e747d5090/final_solution.xlsx"},"_rid":"ZmUEAOX-PP0OAAAAAAAAAA==","_self":"dbs/ZmUEAA==/colls/ZmUEAOX-PP0=/docs/ZmUEAOX-PP0OAAAAAAAAAA==/","_etag":"\"b103e23a-0000-0200-0000-61fd73270000\"","_attachments":"attachments/","notebook_url":"https://adb-8909892809143077.17.azuredatabricks.net/?o=8909892809143077#job/113888/run/264311","_ts":1644000039},{"id":"d0e0a407-7cf9-498a-a97d-e9c297cca37a","name":"MRF - 1 2021","creation_date":"2022/02/04 15:57:59","start_date":"2021-06-01 00:00:00","until-date":"2021-07-01 00:00:00","comment":"Scenario created from file uploaded in storage - new_scenario_test.xlsx","status":"ERROR - 0","run_date":"2022/02/04 15:59:39","job_id":"d7305b04-eabc-4f31-bfe5-8c4f37f7041a","files":{"input_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/inputs/921672-new_scenario_test.xlsx","solution_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/solution/d0e0a407-7cf9-498a-a97d-e9c297cca37a/solution.xlsx","final_url":"https://datalakefcbccdsandbox.blob.core.windows.net/ima/raw/optimizer/outputs/final/d0e0a407-7cf9-498a-a97d-e9c297cca37a/final_solution.xlsx"},"_rid":"ZmUEAOX-PP0PAAAAAAAAAA==","_self":"dbs/ZmUEAA==/colls/ZmUEAOX-PP0=/docs/ZmUEAOX-PP0PAAAAAAAAAA==/","_etag":"\"b103a5d8-0000-0200-0000-61fd78650000\"","_attachments":"attachments/","notebook_url":"https://adb-8909892809143077.17.azuredatabricks.net/?o=8909892809143077#job/114251/run/264544","_ts":1644001381}]),
+    data=data, 
+    show_order=True,
+    columns=[
+        Column(name='id', label='ID'), 
+        Column(name='avatar', label='Avatar', dtype=ColumnDType.IMAGE), 
+        Column(name='full_name', label='Full Name'), 
+        Column(name='email', label='Email'), 
+        Column(name='created_at', label='Created At', dtype=ColumnDType.DATETIME, dateformat='%d/%m/%Y')],
 )

@@ -6,7 +6,7 @@ Awesome table is a component to use with (Streamlit)[https://github.com/streamli
 
 ## Installing AwesomeTable using PiP
 ```
-pip install streamlit-awesome-table==0.0.1
+pip install streamlit-awesome-table
 ```
 
 ## Examples

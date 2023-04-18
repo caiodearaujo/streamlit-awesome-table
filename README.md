@@ -2,7 +2,7 @@
 
 ---
 
-Awesome table is a component to use with (Streamlit)[https://github.com/streamlit/streamlit] with order and search components.
+Awesome table is a component to use with [Streamlit](https://github.com/streamlit/streamlit) with order and search components.
 
 ## Installing AwesomeTable using PiP
 ```

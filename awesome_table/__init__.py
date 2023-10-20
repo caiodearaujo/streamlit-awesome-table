@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from pandas.io.json import json_normalize
 import streamlit as st
 from typing import List
 import streamlit.components.v1 as components

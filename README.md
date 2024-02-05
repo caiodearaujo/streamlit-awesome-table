@@ -29,7 +29,7 @@ AwesomeTable(pd.json_normalize(sample_data))
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import Column
+from awesome_table.column import Column
 
 sample_data = {...}
 
@@ -50,7 +50,7 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from awesome_table.column import (Column, ColumnDType)
 
 sample_data = {...}
 
@@ -71,7 +71,7 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from awesome_table.column import (Column, ColumnDType)
 
 sample_data = {...}
 
@@ -92,7 +92,7 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from awesome_table.column import (Column, ColumnDType)
 
 sample_data = {...}
 
@@ -113,7 +113,7 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from awesome_table.column import (Column, ColumnDType)
 
 sample_data = {...}
 
@@ -134,7 +134,7 @@ AwesomeTable(pd.json_normalize(sample_data), columns=[
 ```
 import pandas as pd
 from awesome_table import AwesomeTable
-from awesome_table.columns import (Column, ColumnDType)
+from awesome_table.column import (Column, ColumnDType)
 
 sample_data = {...}
 
